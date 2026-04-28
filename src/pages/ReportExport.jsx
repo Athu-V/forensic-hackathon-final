@@ -1,32 +1,53 @@
 import React from 'react';
 import { FileText, Download, Share2, Printer, Trash2, FileCheck, FileArchive, Settings } from 'lucide-react';
+import { useToast } from '../components/Layout';
 
-const ReportCard = ({ title, type, date, size, author }) => (
-  <div className="glass-panel" style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-        <div style={{ padding: '12px', background: 'var(--bg-surface-hover)', borderRadius: '12px', color: 'var(--accent-secondary)' }}>
-            {type === 'pdf' ? <FileText size={24} /> : <FileArchive size={24} />}
-        </div>
-        <div>
-            <h4 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '4px' }}>{title}</h4>
-            <div style={{ display: 'flex', gap: '12px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                <span>{date}</span>
-                <span>•</span>
-                <span>{size}</span>
-                <span>•</span>
-                <span>Gen by: {author}</span>
-            </div>
-        </div>
+const ReportCard = ({ title, type, date, size, author }) => {
+  const { showToast } = useToast();
+  return (
+    <div className="glass-panel" style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <div style={{ padding: '12px', background: 'var(--bg-surface-hover)', borderRadius: '12px', color: 'var(--accent-secondary)' }}>
+              {type === 'pdf' ? <FileText size={24} /> : <FileArchive size={24} />}
+          </div>
+          <div>
+              <h4 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '4px' }}>{title}</h4>
+              <div style={{ display: 'flex', gap: '12px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                  <span>{date}</span>
+                  <span>•</span>
+                  <span>{size}</span>
+                  <span>•</span>
+                  <span>Gen by: {author}</span>
+              </div>
+          </div>
+      </div>
+      <div style={{ display: 'flex', gap: '8px' }}>
+          <button 
+            onClick={() => showToast(`Sharing ${title}...`, 'success')}
+            className="glass-panel" style={{ padding: '8px', color: 'var(--text-secondary)' }}
+          >
+            <Share2 size={18} />
+          </button>
+          <button 
+            onClick={() => showToast(`Downloading ${title}...`, 'success')}
+            className="glass-panel" style={{ padding: '8px', color: 'var(--accent-primary)' }}
+          >
+            <Download size={18} />
+          </button>
+          <button 
+            onClick={() => showToast(`Report ${title} marked for deletion`, 'success')}
+            className="glass-panel" style={{ padding: '8px', color: 'var(--accent-danger)' }}
+          >
+            <Trash2 size={18} />
+          </button>
+      </div>
     </div>
-    <div style={{ display: 'flex', gap: '8px' }}>
-        <button className="glass-panel" style={{ padding: '8px', color: 'var(--text-secondary)' }}><Share2 size={18} /></button>
-        <button className="glass-panel" style={{ padding: '8px', color: 'var(--accent-primary)' }}><Download size={18} /></button>
-        <button className="glass-panel" style={{ padding: '8px', color: 'var(--accent-danger)' }}><Trash2 size={18} /></button>
-    </div>
-</div>
-);
+  );
+};
 
 const ReportExport = () => {
+  const { showToast } = useToast();
+
   return (
     <div className="reports-page">
       <div className="page-header">
@@ -35,11 +56,14 @@ const ReportExport = () => {
           <p className="page-subtitle">Generate court-admissible dossiers and technical incident reports.</p>
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
-          <button style={{ 
-            background: 'var(--accent-primary)', color: 'var(--bg-base)', 
-            padding: '10px 24px', borderRadius: 'var(--radius-sm)', fontWeight: 600,
-            display: 'flex', alignItems: 'center', gap: '8px'
-          }}>
+          <button 
+            onClick={() => showToast('Opening detailed report builder...', 'success')}
+            style={{ 
+              background: 'var(--accent-primary)', color: 'var(--bg-base)', 
+              padding: '10px 24px', borderRadius: 'var(--radius-sm)', fontWeight: 600,
+              display: 'flex', alignItems: 'center', gap: '8px'
+            }}
+          >
             <FileCheck size={18} /> New Detailed Report
           </button>
         </div>
@@ -64,11 +88,11 @@ const ReportExport = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
             <div style={{ display: 'flex', gap: '24px' }}>
                 <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--accent-primary)', borderBottom: '2px solid var(--accent-primary)', paddingBottom: '4px' }}>Recent Reports</h3>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 500, color: 'var(--text-muted)' }}>Scheduled</h3>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 500, color: 'var(--text-muted)' }}>Archive</h3>
+                <h3 onClick={() => showToast('No scheduled reports currently', 'success')} style={{ fontSize: '1.1rem', fontWeight: 500, color: 'var(--text-muted)', cursor: 'pointer' }}>Scheduled</h3>
+                <h3 onClick={() => showToast('Loading archive...', 'success')} style={{ fontSize: '1.1rem', fontWeight: 500, color: 'var(--text-muted)', cursor: 'pointer' }}>Archive</h3>
             </div>
             <div style={{ display: 'flex', gap: '12px' }}>
-                <button className="glass-panel" style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem' }}>
+                <button onClick={() => showToast('Report configuration menu opening...', 'success')} className="glass-panel" style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem' }}>
                     <Settings size={14} /> Config
                 </button>
             </div>
@@ -87,3 +111,4 @@ const ReportExport = () => {
 };
 
 export default ReportExport;
+

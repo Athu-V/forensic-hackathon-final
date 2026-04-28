@@ -1,7 +1,10 @@
 import React from 'react';
 import { Search, Bot, Database, Zap, RefreshCw, Layers } from 'lucide-react';
+import { useToast } from '../components/Layout';
 
 const TelegramScanner = () => {
+  const { showToast } = useToast();
+
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div className="page-header">
@@ -101,12 +104,15 @@ const TelegramScanner = () => {
                 { tag: 'bin', count: 10 },
                 { tag: 'vulnerability', count: 9 },
               ].map((kw, i) => (
-                <div key={i} style={{ 
-                  background: `rgba(0, 255, 170, ${kw.count > 20 ? '0.2' : '0.05'})`, 
-                  border: `1px solid ${kw.count > 20 ? 'var(--accent-primary)' : 'var(--border-color)'}`,
-                  padding: '4px 10px', borderRadius: '12px', fontSize: '0.8rem',
-                  display: 'flex', gap: '6px', cursor: 'pointer'
-                }}>
+                <div key={i} 
+                  onClick={() => showToast(`Filtering live feed for keyword: "${kw.tag}"`, 'success')}
+                  style={{ 
+                    background: `rgba(0, 255, 170, ${kw.count > 20 ? '0.2' : '0.05'})`, 
+                    border: `1px solid ${kw.count > 20 ? 'var(--accent-primary)' : 'var(--border-color)'}`,
+                    padding: '4px 10px', borderRadius: '12px', fontSize: '0.8rem',
+                    display: 'flex', gap: '6px', cursor: 'pointer'
+                  }}
+                >
                   <span style={{ color: 'var(--text-primary)' }}>{kw.tag}</span>
                   <span style={{ color: 'var(--text-muted)' }}>{kw.count}</span>
                 </div>
@@ -122,3 +128,4 @@ const TelegramScanner = () => {
 };
 
 export default TelegramScanner;
+

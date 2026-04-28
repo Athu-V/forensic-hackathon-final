@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Filter, ChevronDown, CheckCircle2, AlertCircle, Clock, ExternalLink } from 'lucide-react';
+import { useToast } from '../components/Layout';
 
-const alertsData = [
+const alertsDataRaw = [
   { id: 'AL-10029', severity: 'Critical', source: 'Telegram / DarkNet', target: 'Financial Records', status: 'Unassigned', time: '10:42 AM' },
   { id: 'AL-10028', severity: 'High', source: 'Twitter OSINT', target: 'Executive Doxxing', status: 'In Progress', time: '09:15 AM' },
   { id: 'AL-10027', severity: 'Medium', source: 'Forum Scraping', target: 'Brand Impersonation', status: 'Resolved', time: 'Yesterday' },
@@ -11,7 +12,9 @@ const alertsData = [
 ];
 
 const AlertQueue = () => {
+  const [alertsData, setAlertsData] = useState(alertsDataRaw);
   const [selectedAlert, setSelectedAlert] = useState(null);
+  const { showToast } = useToast();
 
   const getSeverityColor = (severity) => {
     switch(severity) {
@@ -20,6 +23,13 @@ const AlertQueue = () => {
       case 'Medium': return '#00B8FF';
       default: return '#94A3B8';
     }
+  };
+
+  const handleAssign = () => {
+    if (!selectedAlert) return;
+    setAlertsData(prev => prev.map(a => a.id === selectedAlert.id ? { ...a, status: 'In Progress' } : a));
+    setSelectedAlert(prev => ({ ...prev, status: 'In Progress' }));
+    showToast(`Incident ${selectedAlert.id} assigned to Admin User.`, 'success');
   };
 
   return (
@@ -32,7 +42,11 @@ const AlertQueue = () => {
             <p className="page-subtitle">Manage, triage, and investigate security incidents.</p>
           </div>
           <div style={{ display: 'flex', gap: '12px' }}>
-            <button className="glass-panel" style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
+            <button 
+              onClick={() => showToast('Filters menu opening...', 'success')}
+              className="glass-panel" 
+              style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}
+            >
               <Filter size={16} /> Filters <ChevronDown size={16} />
             </button>
           </div>
@@ -128,20 +142,27 @@ const AlertQueue = () => {
               </code>
             </div>
 
-            <button style={{ 
-              width: '100%', padding: '12px', borderRadius: 'var(--radius-md)', 
-              background: 'var(--bg-surface-hover)', border: '1px solid var(--border-color)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', 
-              color: 'var(--text-primary)', marginBottom: '12px', transition: 'all 0.2s'
-            }} onMouseOver={e => e.currentTarget.style.background = 'var(--text-primary)'}
-               onMouseOut={e => e.currentTarget.style.background = 'var(--bg-surface-hover)'}>
+            <button 
+              onClick={handleAssign}
+              style={{ 
+                width: '100%', padding: '12px', borderRadius: 'var(--radius-md)', 
+                background: 'var(--bg-surface-hover)', border: '1px solid var(--border-color)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', 
+                color: 'var(--text-primary)', marginBottom: '12px', transition: 'all 0.2s',
+                cursor: 'pointer'
+              }}
+            >
               Assign to Me
             </button>
-            <button style={{ 
-              width: '100%', padding: '12px', borderRadius: 'var(--radius-md)', 
-              background: 'var(--accent-danger)', color: '#fff',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
-            }}>
+            <button 
+              onClick={() => showToast(`Opening forensic analysis for ${selectedAlert.id}...`, 'success')}
+              style={{ 
+                width: '100%', padding: '12px', borderRadius: 'var(--radius-md)', 
+                background: 'var(--accent-danger)', color: '#fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                cursor: 'pointer'
+              }}
+            >
               Open in Forensic <ExternalLink size={16} />
             </button>
           </div>
@@ -152,3 +173,4 @@ const AlertQueue = () => {
 };
 
 export default AlertQueue;
+

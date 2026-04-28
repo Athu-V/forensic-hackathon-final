@@ -1,8 +1,9 @@
 import React from 'react';
 import { Map as MapIcon, Crosshair, MapPin, Layers, ZoomIn, ZoomOut, Filter } from 'lucide-react';
+import { useToast } from '../components/Layout';
 
-const ThreatMarker = ({ x, y, size, ripple }) => (
-  <g style={{ cursor: 'pointer' }}>
+const ThreatMarker = ({ x, y, size, ripple, onClick }) => (
+  <g style={{ cursor: 'pointer' }} onClick={onClick}>
     {ripple && (
       <circle cx={x} cy={y} r={size * 2} fill="var(--accent-danger)" opacity="0.2">
         <animate attributeName="r" from={size} to={size * 3} dur="1.5s" repeatCount="indefinite" />
@@ -14,6 +15,8 @@ const ThreatMarker = ({ x, y, size, ripple }) => (
 );
 
 const GeographicMap = () => {
+  const { showToast } = useToast();
+
   return (
     <div className="map-page" style={{ height: 'calc(100vh - 140px)', display: 'flex', flexDirection: 'column' }}>
       <div className="page-header">
@@ -23,10 +26,24 @@ const GeographicMap = () => {
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
           <div className="glass-panel" style={{ padding: '4px', display: 'flex', gap: '4px' }}>
-            <button style={{ padding: '8px', background: 'var(--bg-surface-hover)', borderRadius: '4px' }}><Layers size={18} /></button>
-            <button style={{ padding: '8px' }}><Crosshair size={18} /></button>
+            <button 
+              onClick={() => showToast('Switching map layers...', 'success')}
+              style={{ padding: '8px', background: 'var(--bg-surface-hover)', borderRadius: '4px' }}
+            >
+              <Layers size={18} />
+            </button>
+            <button 
+              onClick={() => showToast('Recenter on global threats', 'success')}
+              style={{ padding: '8px' }}
+            >
+              <Crosshair size={18} />
+            </button>
           </div>
-          <button className="glass-panel" style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
+          <button 
+            onClick={() => showToast('Opening severity filter...', 'success')}
+            className="glass-panel" 
+            style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}
+          >
             <Filter size={16} /> Filter by Severity
           </button>
         </div>
@@ -48,17 +65,17 @@ const GeographicMap = () => {
           </g>
           
           {/* Threat Markers */}
-          <ThreatMarker x={320} y={180} size={6} ripple={true} />
-          <ThreatMarker x={750} y={240} size={4} ripple={false} />
-          <ThreatMarker x={600} y={320} size={8} ripple={true} />
-          <ThreatMarker x={450} y={150} size={3} ripple={false} />
-          <ThreatMarker x={880} y={380} size={5} ripple={true} />
+          <ThreatMarker x={320} y={180} size={6} ripple={true} onClick={() => showToast('Investigating threat at lat: 34.0, long: -118.2', 'success')} />
+          <ThreatMarker x={750} y={240} size={4} ripple={false} onClick={() => showToast('Checking node health in EU region...', 'success')} />
+          <ThreatMarker x={600} y={320} size={8} ripple={true} onClick={() => showToast('Critical breach detected in server cluster #9', 'success')} />
+          <ThreatMarker x={450} y={150} size={3} ripple={false} onClick={() => showToast('Low-level anomaly detected', 'success')} />
+          <ThreatMarker x={880} y={380} size={5} ripple={true} onClick={() => showToast('Suspicious traffic originating from proxy hub', 'success')} />
         </svg>
 
         {/* Map Controls */}
         <div style={{ position: 'absolute', bottom: '24px', right: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <button className="glass-panel" style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ZoomIn size={20} /></button>
-          <button className="glass-panel" style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ZoomOut size={20} /></button>
+          <button onClick={() => showToast('Zoom In', 'success')} className="glass-panel" style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ZoomIn size={20} /></button>
+          <button onClick={() => showToast('Zoom Out', 'success')} className="glass-panel" style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ZoomOut size={20} /></button>
         </div>
 
         {/* Legend */}
@@ -87,3 +104,4 @@ const GeographicMap = () => {
 };
 
 export default GeographicMap;
+

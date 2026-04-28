@@ -1,6 +1,7 @@
 import React from 'react';
 import { ShieldCheck, Target, Activity, AlertOctagon, TrendingUp, Search } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useToast } from '../components/Layout';
 
 const data = [
   { name: '00:00', alerts: 12 },
@@ -31,6 +32,8 @@ const StatCard = ({ title, value, icon: Icon, trend, color }) => (
 );
 
 const Dashboard = () => {
+  const { showToast } = useToast();
+
   return (
     <div className="dashboard-page">
       <div className="page-header">
@@ -38,11 +41,17 @@ const Dashboard = () => {
           <h1 className="page-title">Operational Overview</h1>
           <p className="page-subtitle">Real-time system health and threat metrics across all monitored networks.</p>
         </div>
-        <button style={{ 
-          background: 'var(--accent-primary)', color: 'var(--bg-base)', 
-          padding: '10px 24px', borderRadius: 'var(--radius-sm)', fontWeight: 600
-        }}>Generate Brief</button>
+        <button 
+          onClick={() => showToast('Compiling system brief... PDF will be ready in a moment.', 'success')}
+          style={{ 
+            background: 'var(--accent-primary)', color: 'var(--bg-base)', 
+            padding: '10px 24px', borderRadius: 'var(--radius-sm)', fontWeight: 600
+          }}
+        >
+          Generate Brief
+        </button>
       </div>
+
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px', marginBottom: '32px' }}>
         <StatCard title="Active Threats" value="142" icon={Target} trend={12} color="var(--accent-danger)" />

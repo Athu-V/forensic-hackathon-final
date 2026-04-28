@@ -1,7 +1,10 @@
 import React from 'react';
 import { Search, Cpu, FileText, Share2, Terminal, Code, Bug, Fingerprint } from 'lucide-react';
+import { useToast } from '../components/Layout';
 
 const ForensicAnalysis = () => {
+  const { showToast } = useToast();
+
   return (
     <div className="forensics-page">
       <div className="page-header">
@@ -10,11 +13,15 @@ const ForensicAnalysis = () => {
           <p className="page-subtitle">Deep investigative tools for pattern matching and payload analysis.</p>
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
-          <button style={{ 
-            background: 'var(--accent-secondary)', color: 'var(--bg-base)', 
-            padding: '10px 24px', borderRadius: 'var(--radius-sm)', fontWeight: 600,
-            display: 'flex', alignItems: 'center', gap: '8px'
-          }}>
+          <button 
+            onClick={() => showToast('Initializing deep signature scan... Checking 42k patterns.', 'success')}
+            style={{ 
+              background: 'var(--accent-secondary)', color: 'var(--bg-base)', 
+              padding: '10px 24px', borderRadius: 'var(--radius-sm)', fontWeight: 600,
+              display: 'flex', alignItems: 'center', gap: '8px',
+              cursor: 'pointer'
+            }}
+          >
             <Fingerprint size={18} /> Run Signature Scan
           </button>
         </div>
@@ -37,7 +44,7 @@ const ForensicAnalysis = () => {
                         }}
                     />
                 </div>
-                <button className="glass-panel" style={{ padding: '0 20px' }}>Advanced Filter</button>
+                <button onClick={() => showToast('Advanced filtering options loaded', 'success')} className="glass-panel" style={{ padding: '0 20px' }}>Advanced Filter</button>
             </div>
 
             <div style={{ position: 'relative', height: '400px', background: 'rgba(0,0,0,0.2)', borderRadius: 'var(--radius-md)', padding: '20px', overflow: 'hidden' }}>
@@ -74,7 +81,11 @@ const ForensicAnalysis = () => {
                { title: 'Metadata Extractor', icon: FileText, count: '4k Entries' },
                { title: 'Relation Graph', icon: Share2, count: 'Active' },
              ].map((tool, i) => (
-               <div key={i} className="glass-panel" style={{ padding: '20px', display: 'flex', gap: '16px' }}>
+               <div key={i} 
+                onClick={() => showToast(`Launching ${tool.title}...`, 'success')}
+                className="glass-panel" 
+                style={{ padding: '20px', display: 'flex', gap: '16px', cursor: 'pointer' }}
+               >
                  <div style={{ color: 'var(--accent-secondary)' }}><tool.icon size={24} /></div>
                  <div>
                     <h5 style={{ fontSize: '0.9rem', fontWeight: 600 }}>{tool.title}</h5>
@@ -95,7 +106,10 @@ const ForensicAnalysis = () => {
                    { name: 'Botnet Alpha Sync', priority: 'Medium', date: '22 APR' },
                    { name: 'Encryption Key Leak', priority: 'High', date: '21 APR' },
                  ].map((inv, i) => (
-                   <div key={i} style={{ padding: '12px', background: 'var(--bg-surface-hover)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+                   <div key={i} 
+                    onClick={() => showToast(`Loading investigation: ${inv.name}`, 'success')}
+                    style={{ padding: '12px', background: 'var(--bg-surface-hover)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', cursor: 'pointer' }}
+                   >
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                         <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{inv.name}</span>
                         <span style={{ fontSize: '0.7rem', color: inv.priority === 'Critical' ? 'var(--accent-danger)' : 'var(--text-secondary)' }}>{inv.priority}</span>
@@ -104,7 +118,10 @@ const ForensicAnalysis = () => {
                    </div>
                  ))}
               </div>
-              <button style={{ width: '100%', marginTop: '20px', padding: '12px', border: '1px dashed var(--border-color)', borderRadius: 'var(--radius-md)', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+              <button 
+                onClick={() => showToast('Opening new investigation template...', 'success')}
+                style={{ width: '100%', marginTop: '20px', padding: '12px', border: '1px dashed var(--border-color)', borderRadius: 'var(--radius-md)', fontSize: '0.85rem', color: 'var(--text-muted)', cursor: 'pointer' }}
+              >
                 + Start New Investigation
               </button>
            </div>
@@ -125,3 +142,4 @@ const ForensicAnalysis = () => {
 };
 
 export default ForensicAnalysis;
+

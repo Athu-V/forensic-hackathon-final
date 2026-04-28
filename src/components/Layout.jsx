@@ -1,5 +1,5 @@
-import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React, { createContext, useContext, useState, useCallback } from 'react';
+import { NavLink } from 'react-router-dom';
 import { 
   ShieldAlert, 
   LayoutDashboard, 
@@ -10,8 +10,38 @@ import {
   Search, 
   FileText,
   Bell,
-  Settings
+  Settings,
+  X,
+  CheckCircle2
 } from 'lucide-react';
+
+const ToastContext = createContext();
+
+export const useToast = () => useContext(ToastContext);
+
+const Toast = ({ message, type, onClose }) => (
+  <div className={`toast-notification ${type}`} style={{
+    position: 'fixed',
+    bottom: '24px',
+    right: '24px',
+    background: 'var(--bg-surface)',
+    borderLeft: `4px solid ${type === 'success' ? 'var(--accent-primary)' : 'var(--accent-danger)'}`,
+    padding: '16px 20px',
+    borderRadius: '8px',
+    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.4)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    zIndex: 1000,
+    animation: 'slideInRight 0.3s ease-out'
+  }}>
+    <CheckCircle2 size={20} color="var(--accent-primary)" />
+    <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>{message}</span>
+    <button onClick={onClose} style={{ marginLeft: '12px', color: 'var(--text-muted)' }}>
+      <X size={16} />
+    </button>
+  </div>
+);
 
 const Sidebar = () => {
   const navItems = [
@@ -49,6 +79,8 @@ const Sidebar = () => {
 };
 
 const Topbar = () => {
+  const { showToast } = useToast();
+
   return (
     <header className="topbar">
       <div className="topbar-search">
@@ -56,11 +88,11 @@ const Topbar = () => {
         <input type="text" placeholder="Search incidents, IP, terms..." />
       </div>
       <div className="topbar-actions">
-        <button className="action-btn">
+        <button className="action-btn" onClick={() => showToast('No new notifications', 'success')}>
           <Bell size={22} />
           <span className="notification-badge animate-pulse-slow"></span>
         </button>
-        <button className="action-btn">
+        <button className="action-btn" onClick={() => showToast('Settings panel opening...', 'success')}>
           <Settings size={22} />
         </button>
         <div className="user-profile">
@@ -76,17 +108,28 @@ const Topbar = () => {
 };
 
 const Layout = ({ children }) => {
+  const [toast, setToast] = useState(null);
+
+  const showToast = useCallback((message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  }, []);
+
   return (
-    <div className="app-layout">
-      <Sidebar />
-      <div className="main-content">
-        <Topbar />
-        <main className="page-wrapper">
-          {children}
-        </main>
+    <ToastContext.Provider value={{ showToast }}>
+      <div className="app-layout">
+        <Sidebar />
+        <div className="main-content">
+          <Topbar />
+          <main className="page-wrapper">
+            {children}
+          </main>
+        </div>
+        {toast && <Toast {...toast} onClose={() => setToast(null)} />}
       </div>
-    </div>
+    </ToastContext.Provider>
   );
 };
 
 export default Layout;
+

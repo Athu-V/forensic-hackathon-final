@@ -1,5 +1,6 @@
 import React from 'react';
 import { Database, Upload, RefreshCw, CheckCircle2, AlertTriangle, Play, Pause, Activity } from 'lucide-react';
+import { useToast } from '../components/Layout';
 
 const PipelineStage = ({ title, status, progress, icon: Icon }) => (
   <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -40,6 +41,8 @@ const PipelineStage = ({ title, status, progress, icon: Icon }) => (
 );
 
 const AssetIngestion = () => {
+  const { showToast } = useToast();
+
   return (
     <div className="ingestion-page">
       <div className="page-header">
@@ -48,18 +51,26 @@ const AssetIngestion = () => {
           <p className="page-subtitle">Manage automated data harvesting, normalization, and indexing processes.</p>
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
-          <button className="glass-panel" style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
+          <button 
+            onClick={() => showToast('Initiating global pipeline synchronization...', 'success')}
+            className="glass-panel" 
+            style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}
+          >
             <RefreshCw size={16} /> Force Sync
           </button>
-          <button style={{ 
-            background: 'var(--accent-primary)', color: 'var(--bg-base)', 
-            padding: '10px 24px', borderRadius: 'var(--radius-sm)', fontWeight: 600,
-            display: 'flex', alignItems: 'center', gap: '8px'
-          }}>
+          <button 
+            onClick={() => showToast('Opening data source configuration wizard...', 'success')}
+            style={{ 
+              background: 'var(--accent-primary)', color: 'var(--bg-base)', 
+              padding: '10px 24px', borderRadius: 'var(--radius-sm)', fontWeight: 600,
+              display: 'flex', alignItems: 'center', gap: '8px'
+            }}
+          >
             <Upload size={18} /> New Data Source
           </button>
         </div>
       </div>
+
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px', marginBottom: '32px' }}>
         <PipelineStage title="OSINT Harvester" status="active" progress={65} icon={Database} />
